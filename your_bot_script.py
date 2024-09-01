@@ -10,12 +10,6 @@ import pytz
 import datetime
 import asyncio
 
-# Substitua pelo token do seu bot do Discord
-DISCORD_TOKEN = 'SEU TOKEN'
-
-# URL da Bluesky API para a feed list
-BLUESKY_API_URL = "https://public.api.bsky.app/xrpc/app.bsky.feed.getListFeed?list=INSIRA_SUA_LISTA_EM_AT_PROTOCOL_AQUI"
-
 # Configurações do bot
 intents = discord.Intents.default()
 intents.message_content = True
@@ -95,7 +89,6 @@ async def check_new_posts():
     global last_post_timestamp
     await bot.wait_until_ready()
 
-    channel_id = 00000000000000000000  # Atualize o ID do seu Canal para postagem do seu Feed no BlueSky.
     channel = bot.get_channel(channel_id)
 
     if channel is None:
