@@ -9,13 +9,15 @@ import requests
 import pytz
 import datetime
 import asyncio
-
 import os
+from http.server import SimpleHTTPRequestHandler, HTTPServer
+import threading
+
+# Configurações do bot
 DISCORD_TOKEN = os.environ['DISCORD_TOKEN']
 BLUESKY_API_URL = os.environ['BLUESKY_API_URL']
 channel_id = int(os.environ['channel_id'])
 
-# Configurações do bot
 intents = discord.Intents.default()
 intents.message_content = True
 
@@ -141,8 +143,21 @@ async def clear(ctx):
     else:
         await ctx.send("Você não tem permissão para usar este comando.")
 
-bot.run(DISCORD_TOKEN)
+# Função para iniciar um servidor HTTP simples
+def run_http_server():
+    port = 8000
+    server_address = ('', port)
+    httpd = HTTPServer(server_address, SimpleHTTPRequestHandler)
+    print(f"Servidor HTTP rodando na porta {port}")
+    httpd.serve_forever()
 
+if __name__ == "__main__":
+    # Executa o bot do Discord em paralelo ao servidor HTTP
+    bot_thread = threading.Thread(target=bot.run, args=(DISCORD_TOKEN,))
+    bot_thread.start()
+
+    run_http_server()
+    
 # BOT DESENVOLVIDO POR:
 # HERV | HERV DESIGN
 # @hervdesign.com (BlueSky)
