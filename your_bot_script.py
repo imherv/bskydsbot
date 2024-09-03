@@ -10,6 +10,11 @@ import pytz
 import datetime
 import asyncio
 
+import os
+DISCORD_TOKEN = os.environ['DISCORD_TOKEN']
+BLUESKY_API_URL = os.environ['BLUESKY_API_URL']
+channel_id = os.environ['channel_id']
+
 # Configurações do bot
 intents = discord.Intents.default()
 intents.message_content = True
@@ -23,7 +28,6 @@ def fetch_bluesky_posts():
     try:
         response = requests.get(BLUESKY_API_URL)
         if response.status_code == 200:
-            print("Bluesky API: Dados recebidos com sucesso.")
             return response.json()
         else:
             print(f"Erro na API Bluesky: {response.status_code}")
@@ -70,15 +74,16 @@ async def send_new_post(channel, post):
     if author_avatar.startswith(('http://', 'https://')):
         embed.set_thumbnail(url=author_avatar)
 
-    # Adiciona o footer com o link para a postagem
-    embed.set_footer(text="", icon_url="https://bsky.app/static/favicon-16x16.png")  # Usando ícone de favicon do Bluesky
 
     # Adiciona o link completo na descrição do embed
     embed.description += f"\n\n[Visualizar no BlueSky]({post_url})"
 
     try:
-        await channel.send(embed=embed)
+        message = await channel.send(embed=embed)
         print(f"Mensagem enviada: {post_url}")
+        
+        # Adiciona uma reação de coração vermelho na mensagem enviada
+        await message.add_reaction("❤️")
     except discord.DiscordException as e:
         print(f"Erro ao enviar mensagem: {e}")
 
@@ -117,7 +122,7 @@ async def check_new_posts():
                         last_post_timestamp = post_time  # Atualiza o timestamp da última postagem processada
                         await send_new_post(channel, post_item)
         
-        await asyncio.sleep(3)  # Verifica novos posts a cada 3 segundos.
+        await asyncio.sleep(2)  # Verifica novos posts a cada 3 segundos.
 
 @bot.event
 async def on_ready():
