@@ -96,14 +96,9 @@ async def check_new_posts():
     
     channel = bot.get_channel(channel_id)
 
-        if channel is None:
-            print(f"Canal com ID {channel_id} não encontrado. Verifique se o ID está correto e se o bot está no servidor correto.")
-        else:
-            print(f"Canal com ID {channel_id} encontrado: {channel.name}")
-        
-            if channel is None:
-                print("Canal não encontrado. Verifique o ID do canal.")
-                return
+    if channel is None:
+        print("Canal não encontrado. Verifique o ID do canal.")
+        return
 
     while not bot.is_closed():
         posts_data = fetch_bluesky_posts()
