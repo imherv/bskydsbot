@@ -13,7 +13,7 @@ import asyncio
 import os
 DISCORD_TOKEN = os.environ['DISCORD_TOKEN']
 BLUESKY_API_URL = os.environ['BLUESKY_API_URL']
-channel_id = os.environ['channel_id']
+channel_id = int(os.environ['channel_id'])
 
 # Configurações do bot
 intents = discord.Intents.default()
@@ -93,12 +93,17 @@ last_post_timestamp = None
 async def check_new_posts():
     global last_post_timestamp
     await bot.wait_until_ready()
-
+    
     channel = bot.get_channel(channel_id)
 
-    if channel is None:
-        print("Canal não encontrado. Verifique o ID do canal.")
-        return
+        if channel is None:
+            print(f"Canal com ID {channel_id} não encontrado. Verifique se o ID está correto e se o bot está no servidor correto.")
+        else:
+            print(f"Canal com ID {channel_id} encontrado: {channel.name}")
+        
+            if channel is None:
+                print("Canal não encontrado. Verifique o ID do canal.")
+                return
 
     while not bot.is_closed():
         posts_data = fetch_bluesky_posts()
